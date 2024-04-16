@@ -35,7 +35,7 @@ sealed interface ScreenUiState {
 }
 ```
 
-With the ADTs representation, we eliminate all impossible cases. We also do eliminate that on compile-time, meaning that whatever shit we do - the compiler will never allow the code to run.
+With the ADTs representation, we eliminate all impossible cases. We also do eliminate that at compile-time, meaning that whatever shit we do - the compiler will never allow the code to run.
 
 **Takeaway:** Model your data using `data classes`, and  `sealed interfaces` (and combinations of them) in a way that:
 
@@ -66,10 +66,10 @@ Do you spot them?
 Let's think and analyze:
 
 1. What if someone orders a `count = 0` or even worse a `count = -1`?
-2. Imagine a function `placeOrder(orderId: UUID, userId: UUID, itemId: UUID, ...)`. How likely is someone to pass a wrong `UUID` and mess UUIDs up?
+2. Imagine a function `placeOrder(orderId: UUID, userId: UUID, itemId: UUID, ...)`. How likely is someone to pass the wrong `UUID` and mess UUIDs up?
 3. The `trackingId` seems to be required and important but what if someone passes `trackingId = ""` or `trackingId = "XYZ  "`?
 
-I can go on but you see the point. So let's how we can fix it.
+I can go on, but you see the point. So let's see how we can fix it.
 
 ```kotlin
 data class Order(
@@ -118,7 +118,7 @@ This is **validation by construction** and it eliminates undesirable cases asap 
 - Order `count` of zero, negative, or infinity by explicitly requiring a `PositiveInt` (unfortunately, that happens at runtime because the compiler can't know if a given integer is positive or not by just looking at the code).
 - The `UUID`s now can't be messed up because the compiler will give you an error, if for example you try to pass `UserId` to a function accepting `OrderId`.
 - The `time` is now always in UTC by using `Instant`.
-- The `trackignId` is trimmed and can't be blank.
+- The `trackingId` is trimmed and can't be blank.
 
 To learn more about Exact types you can check [the Arrow Exact GitHub repo](https://github.com/arrow-kt/arrow-exact). The benefit of explicit data models is correctness and reduced complexity of your core logic.
 
